@@ -1,4 +1,6 @@
 using CarsApi.Services.Health;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +12,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddHealthChecks()
-            .AddCheck<ApiHealthCheck>("JokesApiChecks");
+            .AddCheck<ApiHealthCheck>("AirportApiChecks", tags: ["Airport Api"])
+            .AddCheck<ChuckNorrisApiHealthCheck>("JokesApiChecks", tags: ["Joke Api"]);
+
 
 var app = builder.Build();
 
@@ -28,6 +32,10 @@ app.UseAuthorization();
 app.MapControllers();
 
 // Creating endpoint for my health check
-app.MapHealthChecks("/health");
+app.MapHealthChecks("/health", new HealthCheckOptions()
+{
+    Predicate = _ => true,
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 
 app.Run();
