@@ -1,3 +1,5 @@
+using CarsApi.Services.Health;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,7 +9,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddHealthChecks();
+builder.Services.AddHealthChecks()
+            .AddCheck<ApiHealthCheck>("JokesApiChecks");
 
 var app = builder.Build();
 
