@@ -15,6 +15,9 @@ builder.Services.AddHealthChecks()
             .AddCheck<ApiHealthCheck>("AirportApiChecks", tags: ["Airport Api"])
             .AddCheck<ChuckNorrisApiHealthCheck>("JokesApiChecks", tags: ["Joke Api"]);
 
+builder.Services.AddHealthChecksUI(s => s.AddHealthCheckEndpoint("endpoint1", "http://localhost:5000/health"))
+            .AddInMemoryStorage();
+
 
 var app = builder.Build();
 
@@ -32,6 +35,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 // Creating endpoint for my health check
+app.MapHealthChecksUI();
 app.MapHealthChecks("/health", new HealthCheckOptions()
 {
     Predicate = _ => true,
